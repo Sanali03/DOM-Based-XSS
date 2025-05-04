@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hash Hustler</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    #profileName {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Your Profile</h1>
+  <p id="profileName">Loading...</p>
+
+  <script>
+    const flag = "CTF{dom_xss_pwned}";
+    const hashValue = location.hash.substring(1); // get value after '#'
+    document.getElementById("profileName").innerHTML = hashValue; // vulnerable to XSS
+  </script>
+</body>
+</html>
