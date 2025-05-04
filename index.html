@@ -30,17 +30,16 @@
   <div id="congrats">🎉 Congratulations! You found the flag: <span id="flagText"></span></div>
 
   <script>
-    // Expose flag globally
+    // Global flag
     window.flag = "CTF{dom_xss_pwned}";
 
-    const hash = decodeURIComponent(location.hash.substring(1));
-    const profileDiv = document.getElementById("profileName");
+    function renderProfileFromHash() {
+      const hash = decodeURIComponent(location.hash.substring(1));
+      const profileDiv = document.getElementById("profileName");
+      profileDiv.innerHTML = hash;
+    }
 
-    // Render hash as HTML (vulnerable)
-    profileDiv.innerHTML = hash;
-
-    // Hook: if XSS works, the attacker will trigger alert(flag)
-    // So override alert to detect success
+    // Hook alert to show congrats message
     const originalAlert = window.alert;
     window.alert = function(msg) {
       if (msg === flag) {
@@ -49,6 +48,12 @@
       }
       originalAlert(msg);
     };
+
+    // Render once on load
+    renderProfileFromHash();
+
+    // Re-render when hash changes (no refresh needed)
+    window.addEventListener("hashchange", renderProfileFromHash);
   </script>
 </body>
 </html>
