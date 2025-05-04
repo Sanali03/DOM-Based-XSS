@@ -21,9 +21,11 @@
   <p id="profileName">Loading...</p>
 
   <script>
-    const flag = "CTF{dom_xss_pwned}";
-    const hashValue = location.hash.substring(1); // get value after '#'
-    document.getElementById("profileName").innerHTML = hashValue; // vulnerable to XSS
+    // Declare flag in global scope
+    window.flag = "CTF{dom_xss_pwned}";
+
+    const hashValue = location.hash.substring(1);
+    document.getElementById("profileName").innerHTML = hashValue;
   </script>
 </body>
 </html>
