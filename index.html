@@ -2,30 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hash Hustler</title>
+  <title>DOM XSS Challenge</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 40px;
-      background-color: #f9f9f9;
+      background: #f0f0f0;
     }
     #profileName {
-      margin-top: 20px;
       font-size: 24px;
-      color: #444;
+      margin-top: 20px;
+    }
+    #congrats {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #d4edda;
+      color: #155724;
+      font-weight: bold;
+      border: 1px solid #c3e6cb;
+      display: none;
     }
   </style>
 </head>
 <body>
   <h1>Welcome to Your Profile</h1>
-  <p id="profileName">Loading...</p>
+  <div id="profileName">Loading...</div>
+  <div id="congrats">🎉 Congratulations! You found the flag: <span id="flagText"></span></div>
 
   <script>
-    // Expose flag to global scope
+    // Expose flag globally
     window.flag = "CTF{dom_xss_pwned}";
 
-    const hashValue = location.hash.substring(1);
-    document.getElementById("profileName").innerHTML = hashValue;
+    const hash = decodeURIComponent(location.hash.substring(1));
+    const profileDiv = document.getElementById("profileName");
+
+    // Render hash as HTML (vulnerable)
+    profileDiv.innerHTML = hash;
+
+    // Hook: if XSS works, the attacker will trigger alert(flag)
+    // So override alert to detect success
+    const originalAlert = window.alert;
+    window.alert = function(msg) {
+      if (msg === flag) {
+        document.getElementById("flagText").textContent = msg;
+        document.getElementById("congrats").style.display = "block";
+      }
+      originalAlert(msg);
+    };
   </script>
 </body>
 </html>
